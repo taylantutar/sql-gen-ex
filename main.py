@@ -22,10 +22,14 @@ class RequestDataMapping(BaseModel):
 
 @app.post("/CompliancesCreateMappings/")
 async def create_mapping(data: RequestDataMapping):    
-    print(data.standards)
+    # print(data.standards)
     mappingList = comp_standard_mapping.MappingDataPrepear("2-Mappings.xlsx")
-    result = comp_standard_mapping.PrepareSql(mappingList,data.standards)
-    return {"result":result}
 
+    hasError,result = comp_standard_mapping.CheckValidations(mappingList=mappingList, standardList=data.standards)
+    if not hasError :
+       successResult = comp_standard_mapping.PrepareSql(mappingList,data.standards)
+       return {"result":successResult}
+    else:
+       return {"result":result}
 
-
+        

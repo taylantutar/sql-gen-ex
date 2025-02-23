@@ -41,5 +41,9 @@ def PrepareSql(mappingList, standardList):
         sqlList.append(sqlTxt)
     return sqlList
 
+def CheckValidations(mappingList, standardList):
+    return (True,"An Error ocurred.")
+
+
 
 
