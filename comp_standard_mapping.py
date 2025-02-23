@@ -38,7 +38,8 @@ def PrepareSql(mappingList, standardList):
     sqlList = []
     for mapping in mappingList:
         sqlTxt = f"INSERT INTO TblCompStandardItemMapping([SrcStandardCode],[SrcItemCode],[DestStandardCode],[DestItemCode],[Relevence],[Confidence],[AreaScore],[ItemScore],[InsertDate],[Status])VALUES('{mapping["SrcStandardCode"]}','{mapping["SrcItemCode"]}','{mapping["DestStandardCode"]}','{mapping["DestItemCode"]}',{mapping["BertMean"]} ,{mapping["BertMean"]},{mapping["BertMean"]},{mapping["BertMean"]},GETUTCDATE(),1);"
-        sqlList.append(mapping)
+        sqlList.append(sqlTxt)
+    return sqlList
 
 
 

@@ -24,8 +24,8 @@ class RequestDataMapping(BaseModel):
 async def create_mapping(data: RequestDataMapping):    
     print(data.standards)
     mappingList = comp_standard_mapping.MappingDataPrepear("2-Mappings.xlsx")
-    comp_standard_mapping.PrepareSql(mappingList,data.standards)
-    return {"result":mappingList}
+    result = comp_standard_mapping.PrepareSql(mappingList,data.standards)
+    return {"result":result}
 
 
 
