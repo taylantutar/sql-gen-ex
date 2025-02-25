@@ -2,7 +2,7 @@ import io
 from openpyxl import load_workbook
 from collections import Counter
 
-async def ItemSqlPrepear(file, id):
+async def ItemSqlPrepear(file, id, new_standard_name):
     try:
         contents = await file.read()
         workbook = load_workbook(io.BytesIO(contents), read_only=True)
@@ -16,7 +16,7 @@ async def ItemSqlPrepear(file, id):
             if (row[0].value == None):
                 break
             itemId = id
-            sCode = row[0].value.strip()
+            sCode = new_standard_name.strip()
             iCode = row[2].value.strip()
             area = row[1].value.strip().replace("\n", "")
             desc = row[3].value.strip().replace("\n", "")

@@ -19,12 +19,13 @@ async def create_item(
 
 @app.post("/items/")
 async def create_item(
-    standards: str= Form(...),
+    new_standard_name: str= Form(...),
     id: int= Form(...),
     file: UploadFile = File(...)
 ):
     try:
-        sqlList = await comp_standard_item.ItemSqlPrepear(file, id)
+        print(new_standard_name)
+        sqlList = await comp_standard_item.ItemSqlPrepear(file, id, new_standard_name)
 
         return {
             "Count": len(sqlList),
