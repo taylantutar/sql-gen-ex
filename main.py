@@ -1,6 +1,5 @@
 
 import uvicorn
-from typing import Annotated
 from fastapi import FastAPI, File, Form, UploadFile
 from openpyxl import load_workbook
 import io
@@ -25,10 +24,16 @@ async def create_item(
     file: UploadFile = File(...)
 ):
     try:
-        sql = await comp_standard_item.ItemSqlPrepear(file, id)
-        return {"data": sql}
+        sqlList = await comp_standard_item.ItemSqlPrepear(file, id)
+
+        return {
+            "Count": len(sqlList),
+            "Data" : sqlList
+            }
+    
     except Exception as e:
         return {"error": str(e)}
+    
 
 @app.post("/mappings/")
 async def create_mapping(
