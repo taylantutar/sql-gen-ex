@@ -1,35 +1,49 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+
+import uvicorn
+from typing import Annotated
+from fastapi import FastAPI, File, Form, UploadFile
+from openpyxl import load_workbook
+import io
 
 import comp_standard_item
 import comp_standard_mapping
 
 app = FastAPI()
 
-from typing import List
+@app.post("/sayhello/")
+async def create_item(
+):
+    print("Hello")
+    return {
+        "result": "Hello"
+    }
 
-class RequestDataItem(BaseModel):
-    standards: List[str]
-    id_start: int
+@app.post("/items/")
+async def create_item(
+    standards: str= Form(...),
+    id: int= Form(...),
+    file: UploadFile = File(...)
+):
+    try:
+        sql = await comp_standard_item.ItemSqlPrepear(file, id)
+        return {"data": sql}
+    except Exception as e:
+        return {"error": str(e)}
 
-@app.post("/CompliancesCreateItems/")
-async def create_item(data: RequestDataItem):
-    sql = comp_standard_item.ItemSqlPrepear("1-ControlItems.xlsx", data.id_start)
-    return {"result": sql}
+@app.post("/mappings/")
+async def create_mapping(
+                        standards: str= Form(...),
+                         file: UploadFile = File(...)
+                         ):
+    mappingList = await comp_standard_mapping.MappingDataPrepear(file)
 
-class RequestDataMapping(BaseModel):
-    standards: List[str]
-
-@app.post("/CompliancesCreateMappings/")
-async def create_mapping(data: RequestDataMapping):    
-    # print(data.standards)
-    mappingList = comp_standard_mapping.MappingDataPrepear("2-Mappings.xlsx")
-
-    hasError,result = comp_standard_mapping.CheckValidations(mappingList=mappingList, standardList=data.standards)
+    hasError,result = comp_standard_mapping.CheckValidations(mappingList=mappingList, standards = standards)
     if not hasError :
-       successResult = comp_standard_mapping.PrepareSql(mappingList,data.standards)
+       successResult = comp_standard_mapping.PrepareSql(mappingList,standards)
        return {"result":successResult}
     else:
        return {"result":result}
 
-        
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8001)
