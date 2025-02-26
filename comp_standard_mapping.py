@@ -1,5 +1,6 @@
 import io
 from openpyxl import load_workbook
+from itertools import chain
 
 
 async def MappingDataPrepear(file):
@@ -29,17 +30,24 @@ async def MappingDataPrepear(file):
         raise Exception(f"Error: {file.filename} file is not found.")
     except Exception as e:
         raise Exception(f"An error occured: {e}")
-
+ 
 
 def CheckValidations(mappingList, sFrmStr, iFrmStr):
     try:
-        unvalidData = []
-        for mapping in mappingList:
-            if mapping["SrcStandardCode"] in iFrmStr and mapping["DestStandardCode"] in sFrmStr:
-                unvalidData.append(f"Unvalid mapping. {mapping["SrcStandardCode"]} --> {mapping["DestStandardCode"]}")
+        # allFrmList = sFrmStr + iFrmStr
 
-        if len(unvalidData) > 0:
-            raise Exception(unvalidData)
+        srcFrmList = [row["SrcStandardCode"] for row in mappingList]
+        destFrmList = [row["DestStandardCode"] for row in mappingList]
+        allFrmList = set(srcFrmList + destFrmList)
+        print(allFrmList)
+
+        # unvalidData = []
+        # for mapping in mappingList:
+        #     if mapping["SrcStandardCode"] in iFrmStr and mapping["DestStandardCode"] in sFrmStr:
+        #         unvalidData.append(f"Unvalid mapping. {mapping["SrcStandardCode"]} --> {mapping["DestStandardCode"]}")
+
+        # if len(unvalidData) > 0:
+        #     raise Exception(unvalidData)
 
     except Exception as e:
         raise e

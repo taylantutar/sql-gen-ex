@@ -45,7 +45,7 @@ def CheckDobleItemCode(itemCodeList):
 
     if len(doubleItems) > 0:
         print("Double Items:", doubleItems)
-        raise Exception("There are multiple item codes..", ";".join(doubleItems))
+        raise Exception("There are multiple item codes..", doubleItems[0])
     
 def CheckDobleItemDescriptin(itemDescList): # aynı description olan kayıtlar olabilir
     counter = Counter(itemDescList)
@@ -53,4 +53,4 @@ def CheckDobleItemDescriptin(itemDescList): # aynı description olan kayıtlar o
 
     if len(doubleItems) > 0:
         print("Double Items:", doubleItems)
-        raise Exception("There are multiple item descriptions for different standard codes..", ";".join(doubleItems))
+        raise Exception("There are multiple item descriptions..", doubleItems[0])
