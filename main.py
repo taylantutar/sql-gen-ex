@@ -38,14 +38,17 @@ async def create_mapping(sFrmStr: str = Form(...), iFrmStr: str = Form(...), fil
     try:
         mappingList = await comp_standard_mapping.MappingDataPrepear(file)
 
-        comp_standard_mapping.CheckValidations(mappingList, sFrmStr, iFrmStr)
+        sFrmList = sFrmStr.split(',')
+        iFrmList = iFrmStr.split(',')
 
-        # sqlList = comp_standard_mapping.PrepareSql(mappingList)
+        comp_standard_mapping.CheckValidations(mappingList, sFrmList, iFrmList)
 
-        # return {
-        #     "Count": len(sqlList),
-        #     "Data": sqlList
-        # }
+        sqlList = comp_standard_mapping.PrepareSql(mappingList)
+
+        return {
+            "Count": len(sqlList),
+            "Data": sqlList
+        }
 
     except Exception as e:
         return {"Error": str(e)}

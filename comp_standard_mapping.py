@@ -34,20 +34,24 @@ async def MappingDataPrepear(file):
 
 def CheckValidations(mappingList, sFrmStr, iFrmStr):
     try:
-        # allFrmList = sFrmStr + iFrmStr
+        allDbFrmList = sFrmStr + iFrmStr
 
         srcFrmList = [row["SrcStandardCode"] for row in mappingList]
         destFrmList = [row["DestStandardCode"] for row in mappingList]
         allFrmList = set(srcFrmList + destFrmList)
-        print(allFrmList)
 
-        # unvalidData = []
-        # for mapping in mappingList:
-        #     if mapping["SrcStandardCode"] in iFrmStr and mapping["DestStandardCode"] in sFrmStr:
-        #         unvalidData.append(f"Unvalid mapping. {mapping["SrcStandardCode"]} --> {mapping["DestStandardCode"]}")
+        exceptedFtmList = list(set(allFrmList) - set(allDbFrmList)) 
 
-        # if len(unvalidData) > 0:
-        #     raise Exception(unvalidData)
+        if len(exceptedFtmList) > 0:
+            raise Exception("Wrong Framework Names --> ",exceptedFtmList)
+
+        unvalidData = []
+        for mapping in mappingList:
+            if mapping["SrcStandardCode"] in iFrmStr and mapping["DestStandardCode"] in sFrmStr:
+                unvalidData.append(f"Unvalid mapping. {mapping["SrcStandardCode"]} --> {mapping["DestStandardCode"]}")
+
+        if len(unvalidData) > 0:
+            raise Exception(unvalidData)
 
     except Exception as e:
         raise e
