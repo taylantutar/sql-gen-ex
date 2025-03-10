@@ -43,11 +43,10 @@ async def create_mapping(sFrmStr: str = Form(...), iFrmStr: str = Form(...), fil
 
         comp_standard_mapping.CheckValidations(mappingList, sFrmList, iFrmList)
 
-        sqlList = comp_standard_mapping.PrepareSql(mappingList)
+        sqlList = comp_standard_mapping.PrepareSql(mappingList, sFrmList, iFrmList)
 
         return {
-            "Count": len(sqlList),
-            "Data": sqlList
+            "result": sqlList
         }
 
     except Exception as e:

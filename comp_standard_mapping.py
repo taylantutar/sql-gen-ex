@@ -32,9 +32,9 @@ async def MappingDataPrepear(file):
         raise Exception(f"An error occured: {e}")
  
 
-def CheckValidations(mappingList, sFrmStr, iFrmStr):
+def CheckValidations(mappingList, sFrmList, iFrmList):
     try:
-        allDbFrmList = sFrmStr + iFrmStr
+        allDbFrmList = sFrmList+ iFrmList
 
         srcFrmList = [row["SrcStandardCode"] for row in mappingList]
         destFrmList = [row["DestStandardCode"] for row in mappingList]
@@ -47,7 +47,7 @@ def CheckValidations(mappingList, sFrmStr, iFrmStr):
 
         unvalidData = []
         for mapping in mappingList:
-            if mapping["SrcStandardCode"] in iFrmStr and mapping["DestStandardCode"] in sFrmStr:
+            if mapping["SrcStandardCode"] in iFrmList and mapping["DestStandardCode"] in sFrmList:
                 unvalidData.append(f"Unvalid mapping. {mapping["SrcStandardCode"]} --> {mapping["DestStandardCode"]}")
 
         if len(unvalidData) > 0:
@@ -57,9 +57,18 @@ def CheckValidations(mappingList, sFrmStr, iFrmStr):
         raise e
 
 
-def PrepareSql(mappingList):
+def PrepareSql(mappingList , sFrmList, iFrmList):
     sqlList = []
-    for mapping in mappingList:
-        sqlTxt = f"INSERT INTO TblCompStandardItemMapping([SrcStandardCode],[SrcItemCode],[DestStandardCode],[DestItemCode],[Relevence],[Confidence],[AreaScore],[ItemScore],[InsertDate],[Status])VALUES('{mapping["SrcStandardCode"]}', '{mapping["SrcItemCode"]}', '{mapping["DestStandardCode"]}', '{mapping["DestItemCode"]}', {mapping["BertMean"]} , {mapping["BertMean"]}, {mapping["BertMean"]}, {mapping["BertMean"]}, GETUTCDATE(), 1);"
-        sqlList.append(sqlTxt)
+    for mapping in mappingList:   
+        sSC =  mapping["SrcStandardCode"]    
+        dSC = mapping["DestStandardCode"]
+        sIC = mapping["SrcItemCode"]
+        dIC = mapping["DestItemCode"]
+        bM = mapping["BertMean"]
+        sqlList.append(f"INSERT INTO TblCompStandardItemMapping([SrcStandardCode],[SrcItemCode],[DestStandardCode],[DestItemCode],[Relevence],[Confidence],[AreaScore],[ItemScore],[InsertDate],[Status])VALUES('{sSC}', '{sIC}', '{dSC}', '{dIC}', {bM} , {bM}, {bM}, {bM}, GETUTCDATE(), 1);")
+        
+        if not  sSC in iFrmList  and dSC in sFrmList :
+            sqlList.append(f"INSERT INTO TblCompStandardItemMapping([SrcStandardCode],[SrcItemCode],[DestStandardCode],[DestItemCode],[Relevence],[Confidence],[AreaScore],[ItemScore],[InsertDate],[Status])VALUES('{dSC}', '{dIC}', '{sSC}', '{sIC}', {bM} , {bM}, {bM}, {bM}, GETUTCDATE(), 1);")
+        
+        sqlList.append("--" * 100)
     return sqlList
